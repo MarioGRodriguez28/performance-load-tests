@@ -1,0 +1,27 @@
+{
+  "name": "performance-load-tests",
+  "version": "1.0.0",
+  "description": "Performance and load testing suite using k6 - metrics analysis, SLA validation, trend reporting",
+  "author": "Mario Rodríguez",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MarioGRodriguez28/performance-load-tests.git"
+  },
+  "keywords": [
+    "qa",
+    "performance",
+    "load-testing",
+    "k6",
+    "performance-testing"
+  ],
+  "scripts": {
+    "test:smoke": "k6 run tests/smoke.js",
+    "test:load": "k6 run tests/load.js",
+    "test:stress": "k6 run tests/stress.js",
+    "test:spike": "k6 run tests/spike.js",
+    "test:soak": "k6 run tests/soak.js",
+    "test:all": "node scripts/run-all-tests.js"
+  },
+  "devDependencies": {}
+}
