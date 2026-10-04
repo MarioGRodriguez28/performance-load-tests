@@ -8,7 +8,7 @@ export const THRESHOLDS = {
   load: {
     http_req_duration: ['p(95)<1000', 'p(99)<2000'],
     http_req_failed: ['rate<0.05'],
-    http_requests: ['count>100'],
+    http_reqs: ['count>100'],
   },
   stress: {
     http_req_duration: ['p(95)<2000', 'p(99)<5000'],
