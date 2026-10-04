@@ -1,4 +1,6 @@
-Performance Load Testing Suite
+# Performance Load Testing Suite
+
+[![CI](https://github.com/MarioGRodriguez28/performance-load-tests/actions/workflows/test.yml/badge.svg)](https://github.com/MarioGRodriguez28/performance-load-tests/actions/workflows/test.yml)
 
 A professional performance testing framework using k6 for load testing, stress testing, and SLA validation.
 
