@@ -296,3 +296,7 @@ Mario Rodríguez - QA Automation Engineer
 ---
 
 For questions or contributions: https://github.com/MarioGRodriguez28/performance-load-tests
+
+---
+
+Part of my [QA automation portfolio](https://github.com/MarioGRodriguez28/qa-portfolio-docs). More about my work at [mariogrodriguez.com](https://mariogrodriguez.com).
