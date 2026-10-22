@@ -21,7 +21,7 @@
     "test:stress": "k6 run tests/stress.js",
     "test:spike": "k6 run tests/spike.js",
     "test:soak": "k6 run tests/soak.js",
-    "test:all": "node scripts/run-all-tests.js"
+    "test:all": "k6 run tests/smoke.js && k6 run tests/load.js && k6 run tests/stress.js && k6 run tests/spike.js"
   },
   "devDependencies": {}
 }

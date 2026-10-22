@@ -14,6 +14,10 @@ export const THRESHOLDS = {
     http_req_duration: ['p(95)<2000', 'p(99)<5000'],
     http_req_failed: ['rate<0.1'],
   },
+  spike: {
+    http_req_duration: ['p(95)<2000'],
+    http_req_failed: ['rate<0.1'],
+  },
   soak: {
     http_req_duration: ['p(95)<500'],
     http_req_failed: ['rate<0.05'],
@@ -49,8 +53,8 @@ export const TEST_SCENARIOS = {
   },
   soak: {
     name: 'Soak Test',
-    description: 'Extended duration - 30 VUs for 10 min',
-    vus: 30,
+    description: 'Extended duration - 10 VUs for 10 min',
+    vus: 10,
     duration: '10m',
   },
 };

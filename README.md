@@ -11,10 +11,10 @@ This suite demonstrates production-grade performance testing practices:
 - Smoke tests for sanity checking
 - Load tests with realistic user ramp-up
 - Stress tests to find breaking points
-- Spike and soak tests for edge cases
-- Automated metric collection and reporting
-- SLA validation and thresholds
-- Trend analysis capabilities
+- Spike tests for sudden traffic bursts
+- Soak tests for sustained load over time
+- SLA validation with thresholds that fail the run
+- JSON summary reports for every heavy scenario
 
 ## Technology Stack
 
@@ -67,15 +67,31 @@ Thresholds:
 
 Run: npm run test:stress
 
+### Spike Test
+
+Sudden burst of traffic and recovery: does the system cope with the jump and come back to normal latency afterwards?
+
+Stages: 5 VUs baseline, jump to 150 VUs in 10s, hold 30s, drop back to 5 VUs and watch recovery
+Duration: about 2 minutes
+
+Thresholds:
+- p95 response time < 2000ms
+- Failure rate < 10%
+
+Run: npm run test:spike
+
 ### Soak Test
 
-Extended duration test to detect memory leaks and resource issues.
+Sustained, moderate load to surface problems that only appear over time, such as slow memory growth or connection exhaustion.
 
-VUs: 30 (constant)
+VUs: 10 (constant)
 Duration: 10 minutes
-Threshold: p95 < 500ms
 
-Run: npm run test:soak (requires k6 installed)
+Thresholds:
+- p95 response time < 500ms
+- Failure rate < 5%
+
+Run: npm run test:soak
 
 ## Project Structure
 
@@ -87,8 +103,8 @@ Run: npm run test:soak (requires k6 installed)
 │   ├── stress.js         (Stress test, breaking point)
 │   ├── spike.js          (Spike test)
 │   └── soak.js           (Extended duration test)
-├── k6-config.js          (Shared configuration)
-├── reports/              (Test results and metrics)
+├── k6-config.js          (Shared thresholds and scenario reference)
+├── .github/workflows/    (CI pipeline)
 └── README.md
 ```
 
@@ -144,7 +160,13 @@ k6 run tests/load.js
 # Stress test
 k6 run tests/stress.js
 
-# All tests
+# Spike test
+k6 run tests/spike.js
+
+# Soak test (10 minutes)
+k6 run tests/soak.js
+
+# Smoke, load, stress and spike in sequence
 npm run test:all
 ```
 
@@ -188,40 +210,37 @@ Stage 3 (2m-2m20s): Ramp down to 0
 
 ## Performance Targets
 
-Based on JSONPlaceholder API:
+Targets used against the JSONPlaceholder demo API:
 
-Metric              Target      Actual
-Response Time p95   < 500ms     300-400ms
-Response Time p99   < 1000ms    600-800ms
-Error Rate          < 5%        0-1%
-Throughput          > 100 req/s  150+ req/s
+| Metric | Smoke | Load | Stress | Spike | Soak |
+|---|---|---|---|---|---|
+| p95 response time | < 500ms | < 1000ms | < 2000ms | < 2000ms | < 500ms |
+| p99 response time | - | < 2000ms | < 5000ms | - | - |
+| Error rate | < 10% | < 5% | < 10% | < 10% | < 5% |
+
+Real numbers for each run are in the job log of the [Actions tab](https://github.com/MarioGRodriguez28/performance-load-tests/actions).
 
 ## CI/CD Integration
 
-GitHub Actions Example:
+`.github/workflows/test.yml`:
 
-```yaml
-- name: Run k6 smoke test
-  run: k6 run tests/smoke.js
-  
-- name: Run k6 load test
-  run: k6 run tests/load.js
-```
+| Trigger | What runs |
+|---|---|
+| Push or pull request to `main` | Smoke test |
+| Weekly schedule (Sunday 00:00 UTC) | Smoke and load tests |
+| Manual (Run workflow) | Any single scenario: smoke, load, stress, spike or soak |
+
+Stress, spike and soak are manual on purpose: they push real traffic to a shared public API, so they are not run on every commit.
 
 ## Reports
 
 Output Files:
 
-- smoke-test-report.json
-- load-test-report.json
 - stress-test-report.json
+- spike-test-report.json
+- soak-test-report.json
 
-Each contains:
-
-- Aggregated metrics
-- Per-endpoint breakdown
-- Threshold pass/fail status
-- Timestamp and duration
+Each contains the full k6 summary: aggregated metrics, percentiles, check results and threshold pass/fail status. Smoke and load print their summary to the console.
 
 ## Best Practices Applied
 

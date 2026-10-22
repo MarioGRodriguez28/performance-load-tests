@@ -7,6 +7,13 @@ on:
     branches: [ main ]
   schedule:
     - cron: '0 0 * * 0'
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: 'Scenario to run'
+        type: choice
+        options: [smoke, load, stress, spike, soak]
+        default: smoke
 
 jobs:
   k6:
@@ -18,8 +25,13 @@ jobs:
     - uses: grafana/setup-k6-action@v1
 
     - name: Smoke test
+      if: github.event_name != 'workflow_dispatch'
       run: k6 run tests/smoke.js
 
     - name: Load test (weekly schedule only)
       if: github.event_name == 'schedule'
       run: k6 run tests/load.js
+
+    - name: Manual run
+      if: github.event_name == 'workflow_dispatch'
+      run: k6 run tests/${{ github.event.inputs.scenario }}.js
