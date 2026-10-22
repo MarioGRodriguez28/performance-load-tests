@@ -1,5 +1,6 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
+import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.2/index.js';
 
 export const options = {
   stages: [
@@ -32,6 +33,7 @@ export default function () {
 
 export function handleSummary(data) {
   return {
+    stdout: textSummary(data, { indent: ' ', enableColors: false }),
     'spike-test-report.json': JSON.stringify(data),
   };
 }
